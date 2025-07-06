@@ -1,0 +1,52 @@
+# Security & Sensitive Files
+appsettings.json
+appsettings.*.json
+!appsettings.Development.json
+*.pfx
+*.p12
+*.key
+*.pem
+*.crt
+connectionstrings.json
+secrets.json
+.env
+.env.*
+
+# User Secrets & Local Settings
+**/Properties/launchSettings.json
+
+# Build Output
+bin/
+obj/
+publish/
+
+# Database Files
+*.mdf
+*.ldf
+*.db
+*.sqlite
+*.sqlite3
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+
+# Logs
+*.log
+logs/
+
+# NuGet
+packages/
+*.nupkg
+
+# Temporary Files
+*.tmp
+*~
+Thumbs.db
+.DS_Store
+
+# Node modules (if any)
+node_modules/

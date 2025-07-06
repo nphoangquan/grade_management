@@ -1,0 +1,130 @@
+@model grade_management.Models.SubjectModel
+
+@{
+    ViewData["Title"] = "Sửa môn học";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sửa môn học</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Môn học</a></li>
+        <li class="breadcrumb-item active">Sửa</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-edit me-1"></i>
+            Sửa môn học
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="SubjectID" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="SubjectCode" class="form-label required">Mã môn học</label>
+                            <input asp-for="SubjectCode" class="form-control" placeholder="Nhập mã môn học" />
+                            <span asp-validation-for="SubjectCode" class="text-danger"></span>
+                            <small class="form-text text-muted">Mã môn học phải là duy nhất trong khoa.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SubjectName" class="form-label required">Tên môn học</label>
+                            <input asp-for="SubjectName" class="form-control" placeholder="Nhập tên môn học" />
+                            <span asp-validation-for="SubjectName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DepartmentID" class="form-label required">Khoa</label>
+                            @if (ViewBag.Departments != null && ((SelectList)ViewBag.Departments).Any())
+                            {
+                                <select asp-for="DepartmentID" class="form-select" asp-items="ViewBag.Departments">
+                                    <option value="">Chọn khoa</option>
+                                </select>
+                                <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Không có khoa nào. Vui lòng <a asp-area="Admin" asp-controller="DepartmentManagement" asp-action="Create">tạo khoa</a> trước.
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SubjectCredits" class="form-label required">Tín chỉ</label>
+                            <input asp-for="SubjectCredits" type="number" min="1" max="10" class="form-control" placeholder="Nhập tín chỉ (1-10)" />
+                            <span asp-validation-for="SubjectCredits" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="SubjectType" class="form-label required">Loại môn học</label>
+                            <select asp-for="SubjectType" class="form-select">
+                                <option value="">Chọn loại môn học</option>
+                                <option value="ThucHanh">Thực hành</option>
+                                <option value="LyThuyet">Lý thuyết</option>
+                            </select>
+                            <span asp-validation-for="SubjectType" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SubjectStatus" class="form-label required">Trạng thái</label>
+                            <select asp-for="SubjectStatus" class="form-select">
+                                <option value="">Chọn trạng thái</option>
+                                <option value="Open">Mở</option>
+                                <option value="Close">Đóng</option>
+                                <option value="Full">Đầy</option>
+                            </select>
+                            <span asp-validation-for="SubjectStatus" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SubjectTime" class="form-label">Giờ học</label>
+                            <select asp-for="SubjectTime" class="form-select">
+                                <option value="">Chọn giờ học</option>
+                                <option value="Morning">Sáng</option>
+                                <option value="Afternoon">Chiều</option>
+                            </select>
+                            <span asp-validation-for="SubjectTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Lưu thay đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@section Styles {
+    <style>
+        .form-label.required::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.15);
+        }
+    </style>
+} 

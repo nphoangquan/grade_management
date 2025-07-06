@@ -1,0 +1,116 @@
+@model IEnumerable<grade_management.Models.SubjectModel>
+
+@{
+    ViewData["Title"] = "Môn học";
+    var student = ViewBag.StudentInfo as grade_management.Models.StudentModel;
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="mt-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Hồ sơ của tôi</a></li>
+            <li class="breadcrumb-item active">Môn học</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Môn học</h4>
+                        <small class="text-muted">@student?.StudentName (@student?.StudentCode)</small>
+                    </div>
+                    <div>
+                        @if (Model.Any())
+                        {
+                            var totalCredits = Model.Sum(s => s.SubjectCredits);
+                            <div class="text-end">
+                                <h5 class="mb-0 text-primary">@totalCredits Tín chỉ</h5>
+                                <small class="text-muted">Tổng số tín chỉ</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <div class="row">
+                            @foreach (var subject in Model.OrderBy(s => s.SubjectCode))
+                            {
+                                <div class="col-md-6 col-lg-4 mb-3">
+                                    <div class="card subject-card h-100">
+                                        <div class="card-header">
+                                            <h6 class="mb-0 text-primary">@subject.SubjectCode</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <h6 class="card-title">@subject.SubjectName</h6>
+                                            <p class="text-muted">@subject.SubjectCredits Tín chỉ</p>
+                                            <span class="badge bg-info">@subject.SubjectStatus</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">Không có môn học nào</h5>
+                            <p class="text-muted">Bạn chưa đăng ký môn học nào.</p>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Quay lại hồ sơ
+                        </a>
+                        <a asp-action="Grades" class="btn btn-primary">
+                            <i class="fas fa-chart-line me-2"></i>Xem điểm
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .subject-card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #007bff;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+} 

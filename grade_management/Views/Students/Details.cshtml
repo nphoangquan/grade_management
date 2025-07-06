@@ -1,0 +1,181 @@
+@model grade_management.Models.StudentModel
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="container">
+    <h1 class="page-title">Student Details</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="student-details">
+                        <div class="detail-group">
+                            <label class="detail-label">Student ID</label>
+                            <div class="detail-value">@Model.StudentID</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Name</label>
+                            <div class="detail-value">@Model.StudentName</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Gender</label>
+                            <div class="detail-value">@Model.StudentSex</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Email</label>
+                            <div class="detail-value">@Model.StudentEmail</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Class</label>
+                            <div class="detail-value">@(Model.Class?.ClassName ?? "Not Assigned")</div>
+                        </div>
+
+                        @if (Model.Grades != null && Model.Grades.Any())
+                        {
+                            <div class="detail-group grades-section">
+                                <label class="detail-label">Grades</label>
+                                <div class="grades-list">
+                                    @foreach (var grade in Model.Grades)
+                                    {
+                                        <div class="grade-item">
+                                            <div class="grade-subject">@grade.Subject?.SubjectName</div>
+                                            <div class="grade-details">
+                                                <span class="grade-label">Final Grade:</span>
+                                                <span class="grade-value">@grade.FinalGrade</span>
+                                                <span class="grade-letter">(@grade.GradeToLetter)</span>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                        <a asp-action="Edit" asp-route-id="@Model.StudentID" class="btn-add">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .student-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .detail-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .grades-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .grades-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grade-item {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .grade-subject {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .grade-details {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .grade-label {
+            color: var(--text-secondary);
+        }
+
+        .grade-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .grade-letter {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem !important;
+        }
+    </style>
+} 

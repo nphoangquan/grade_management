@@ -1,0 +1,52 @@
+@model grade_management.Models.DepartmentModel
+
+@{
+    ViewData["Title"] = "Tạo khoa mới";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Tạo khoa mới</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Khoa</a></li>
+        <li class="breadcrumb-item active">Tạo khoa mới</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-plus me-1"></i>
+            Tạo khoa mới
+        </div>
+        <div class="card-body">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DepartmentID" />
+
+                <div class="mb-3">
+                    <label asp-for="DepartmentCode" class="form-label">Mã khoa</label>
+                    <input asp-for="DepartmentCode" class="form-control" />
+                    <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="DepartmentName" class="form-label">Tên khoa</label>
+                    <input asp-for="DepartmentName" class="form-control" />
+                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Tạo khoa
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

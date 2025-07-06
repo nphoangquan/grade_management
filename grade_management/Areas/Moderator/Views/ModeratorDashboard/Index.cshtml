@@ -1,0 +1,336 @@
+﻿@model grade_management.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Bảng điều khiển";
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+<!-- Page Title -->
+<div class="page-title">
+    Hệ thống quản lý điểm sinh viên
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="dashboard-card stat-card">
+            <div class="stat-number" data-value="@Model.StudentCount">0</div>
+            <div class="stat-label">Sinh viên</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="dashboard-card stat-card">
+            <div class="stat-number" data-value="@Model.TeacherCount">0</div>
+            <div class="stat-label">Giảng viên</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="dashboard-card stat-card">
+            <div class="stat-number" data-value="@Model.SubjectCount">0</div>
+            <div class="stat-label">Môn học</div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3">
+        <div class="dashboard-card stat-card">
+            <div class="stat-number" data-value="@Model.AverageGPA">0</div>
+            <div class="stat-label">Điểm trung bình GPA</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Row -->
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-lg-4 mb-4">
+        <div class="dashboard-card">
+            <div class="section-title">Thao tác nhanh</div>
+            
+            <a asp-area="Moderator" asp-controller="StudentManagement" asp-action="Index" class="action-link">
+                <i class="fas fa-user me-2"></i>
+                <strong>Xem sinh viên</strong>
+                <div class="text-muted small">Xem thông tin sinh viên</div>
+            </a>
+            
+            <a asp-area="Moderator" asp-controller="GradeManagement" asp-action="AllStudents" class="action-link">
+                <i class="fas fa-eye me-2"></i>
+                <strong>Xem điểm</strong>
+                <div class="text-muted small">Xem điểm của sinh viên</div>
+            </a>
+            
+            <a asp-area="Moderator" asp-controller="SubjectManagement" asp-action="Index" class="action-link">
+                <i class="fas fa-book me-2"></i>
+                <strong>Xem môn học</strong>
+                <div class="text-muted small">Xem thông tin môn học</div>
+            </a>
+            
+            <a asp-area="Moderator" asp-controller="ClassManagement" asp-action="Index" class="action-link">
+                <i class="fas fa-users me-2"></i>
+                <strong>Xem lớp</strong>
+                <div class="text-muted small">Xem thông tin lớp</div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Grade Distribution Section -->
+    <div class="col-lg-8 mb-4">
+        <div class="dashboard-card">
+            <div class="section-title">Phân bố điểm</div>
+            <div class="grade-distribution">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="grade-chart-container">
+                            <canvas id="gradeDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="grade-legend">
+                            <div class="grade-item">
+                                <span class="grade-dot a-grade"></span>
+                                <span class="grade-label">A (8.5-10.0)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot b-plus-grade"></span>
+                                <span class="grade-label">B+ (7.8-8.4)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot b-grade"></span>
+                                <span class="grade-label">B (7.0-7.7)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot c-plus-grade"></span>
+                                <span class="grade-label">C+ (6.3-6.9)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot c-grade"></span>
+                                <span class="grade-label">C (5.5-6.2)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot d-plus-grade"></span>
+                                <span class="grade-label">D+ (4.8-5.4)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot d-grade"></span>
+                                <span class="grade-label">D (4.0-4.7)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot f-plus-grade"></span>
+                                <span class="grade-label">F+ (3.0-3.9)</span>
+                            </div>
+                            <div class="grade-item">
+                                <span class="grade-dot f-grade"></span>
+                                <span class="grade-label">F (0.0-2.9)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Statistics -->
+@* <div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="section-title">Phân bố điểm theo khoa</div>
+            <div class="chart-container">
+                <canvas id="facultyChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+            <div class="section-title">Xu hướng điểm theo tháng</div>
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+<style>
+    .dashboard-card {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 1.5rem;
+        height: 100%;
+    }
+
+    .stat-card {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #0d6efd;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .action-link {
+        display: block;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+        color: inherit;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .action-link:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+    }
+
+    .grade-distribution {
+        padding: 1rem;
+    }
+
+    .grade-chart-container {
+        height: 300px;
+        margin-bottom: 1rem;
+    }
+
+    .grade-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .grade-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .grade-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    .grade-label {
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .a-grade { background-color: #4CAF50; }
+    .b-plus-grade { background-color: #8BC34A; }
+    .b-grade { background-color: #CDDC39; }
+    .c-plus-grade { background-color: #FFEB3B; }
+    .c-grade { background-color: #FFC107; }
+    .d-plus-grade { background-color: #FF9800; }
+    .d-grade { background-color: #FF5722; }
+    .f-plus-grade { background-color: #f44336; }
+    .f-grade { background-color: #d32f2f; }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate numbers
+            function animateNumber(element, target, duration = 1000) {
+                const start = 0;
+                const increment = target / (duration / 16);
+                let current = start;
+                
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        clearInterval(timer);
+                        current = target;
+                    }
+                    element.textContent = Number.isInteger(target) ? 
+                        Math.floor(current).toLocaleString() : 
+                        current.toFixed(1);
+                }, 16);
+            }
+
+            // Animate all stat numbers
+            document.querySelectorAll('.stat-number').forEach(el => {
+                const value = parseFloat(el.dataset.value);
+                animateNumber(el, value);
+            });
+
+            // Grade Distribution Chart
+            const gradeCtx = document.getElementById('gradeDistributionChart');
+            if (gradeCtx) {
+                new Chart(gradeCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['A', 'B+', 'B', 'C+', 'C', 'D+', 'D', 'F+', 'F'],
+                        datasets: [{
+                            data: [@Model.GradeDistribution.AGrade, 
+                                   @Model.GradeDistribution.BPlusGrade,
+                                   @Model.GradeDistribution.BGrade,
+                                   @Model.GradeDistribution.CPlusGrade,
+                                   @Model.GradeDistribution.CGrade,
+                                   @Model.GradeDistribution.DPlusGrade,
+                                   @Model.GradeDistribution.DGrade,
+                                   @Model.GradeDistribution.FPlusGrade,
+                                   @Model.GradeDistribution.FGrade],
+                            backgroundColor: [
+                                '#4CAF50', // A
+                                '#8BC34A', // B+
+                                '#CDDC39', // B
+                                '#FFEB3B', // C+
+                                '#FFC107', // C
+                                '#FF9800', // D+
+                                '#FF5722', // D
+                                '#f44336', // F+
+                                '#d32f2f'  // F
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                        return `${label}: ${value} subjects (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

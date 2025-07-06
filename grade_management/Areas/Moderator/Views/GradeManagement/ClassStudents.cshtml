@@ -1,0 +1,108 @@
+@model grade_management.Models.ClassModel
+
+@{
+    ViewData["Title"] = $"Sinh viên trong {Model.ClassName}";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title">@Model.ClassName - Sinh viên</h1>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại lớp
+        </a>
+    </div>
+
+    @if (!Model.Students.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Không tìm thấy sinh viên trong lớp này.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var student in Model.Students)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">@student.StudentName</h5>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-id-card me-2"></i>@student.StudentCode
+                                </small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    <i class="fas fa-envelope me-2"></i>@student.StudentEmail
+                                </small>
+                            </p>
+                            <div class="d-grid gap-2">
+                                <a asp-action="ManageSubjects" asp-route-studentId="@student.StudentID" class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-book me-2"></i>Quản lý môn học
+                                </a>
+                                <a asp-action="StudentGrades" asp-route-studentId="@student.StudentID" class="btn btn-primary w-100">
+                                    <i class="fas fa-graduation-cap me-2"></i>Quản lý điểm
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            border: 1px solid rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+    </style>
+} 

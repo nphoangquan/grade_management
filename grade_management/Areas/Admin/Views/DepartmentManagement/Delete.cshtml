@@ -1,0 +1,75 @@
+@model grade_management.Models.DepartmentModel
+
+@{
+    ViewData["Title"] = "Xóa khoa";
+    var hasAssociatedRecords = (Model.Classes?.Any() ?? false) || (Model.Students?.Any() ?? false) || (Model.Teachers?.Any() ?? false);
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Xóa khoa</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Khoa</a></li>
+        <li class="breadcrumb-item active">Xóa khoa</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Xác nhận xóa khoa
+        </div>
+        <div class="card-body">
+            @if (hasAssociatedRecords)
+            {
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading"><i class="fas fa-exclamation-circle"></i> Không thể xóa khoa</h4>
+                    <p>Khoa này không thể bị xóa vì có liên kết với các bản ghi sau:</p>
+                    <ul>
+                        @if (Model.Classes?.Any() ?? false)
+                        {
+                            <li>Lớp: @Model.Classes.Count</li>
+                        }
+                        @if (Model.Students?.Any() ?? false)
+                        {
+                            <li>Sinh viên: @Model.Students.Count</li>
+                        }
+                        @if (Model.Teachers?.Any() ?? false)
+                        {
+                            <li>Giảng viên: @Model.Teachers.Count</li>
+                        }
+                    </ul>
+                    <hr>
+                    <p class="mb-0">Vui lòng xóa hoặc chuyển đổi tất cả các bản ghi liên quan trước khi cố gắng xóa khoa này.</p>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Cảnh báo!</h4>
+                    <p>Bạn có chắc chắn muốn xóa khoa này? Thao tác này không thể hoàn tác.</p>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-2">Mã khoa</dt>
+                    <dd class="col-sm-10">@Model.DepartmentCode</dd>
+
+                    <dt class="col-sm-2">Tên khoa</dt>
+                    <dd class="col-sm-10">@Model.DepartmentName</dd>
+                </dl>
+
+                <form asp-action="Delete" class="mt-3">
+                    <input type="hidden" asp-for="DepartmentID" />
+                    <button type="submit" class="btn btn-danger" @(hasAssociatedRecords ? "disabled" : "")>
+                        <i class="fas fa-trash"></i> Xóa khoa
+                    </button>
+                </form>
+            }
+
+            <div class="mt-3">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div> 

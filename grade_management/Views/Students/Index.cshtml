@@ -1,0 +1,91 @@
+@model IEnumerable<grade_management.Models.StudentModel>
+
+@{
+    ViewData["Title"] = "Student Management";
+}
+
+<div class="container">
+    <h1 class="page-title">Student Management</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a asp-action="Create" class="btn-add">
+                <i class="fas fa-plus"></i> Add New Student
+            </a>
+        </div>
+        <div class="search-filter">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" class="form-control me-2" placeholder="Search students...">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="data-table">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Sex</th>
+                        <th>Email</th>
+                        <th>Class</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.StudentID</td>
+                            <td>@item.StudentName</td>
+                            <td>@item.StudentSex</td>
+                            <td>@item.StudentEmail</td>
+                            <td>@(item.Class?.ClassName ?? "Not Assigned")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.StudentID" class="btn-action">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.StudentID" class="btn-action">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.StudentID" class="btn-action text-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .search-filter {
+            max-width: 300px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn-action i {
+            font-size: 0.875rem;
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .text-danger:hover {
+            background-color: #fff5f7;
+        }
+    </style>
+} 

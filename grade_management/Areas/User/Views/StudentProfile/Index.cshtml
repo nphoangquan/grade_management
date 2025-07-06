@@ -1,0 +1,294 @@
+@model grade_management.Models.ViewModels.StudentProfileViewModel
+
+@{
+    ViewData["Title"] = "Hồ sơ của tôi";
+}
+
+<div class="container">
+    @if (ViewBag.NoStudentAccount == true)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Không có tài khoản sinh viên</h4>
+            <p>Tài khoản của bạn không được liên kết với hồ sơ sinh viên nào. Vui lòng liên hệ với quản trị viên để liên kết tài khoản của bạn với hồ sơ sinh viên.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <!-- Profile Header -->
+            <div class="col-12">
+                <div class="profile-header card mb-4">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="profile-avatar position-relative">
+                                    @if (!string.IsNullOrEmpty(Model.Student.ImagePath))
+                                    {
+                                        <img src="@Model.Student.ImagePath" alt="Profile Picture" class="profile-image" />
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user-graduate fa-4x text-white"></i>
+                                    }
+                                    <a href="@Url.Action("EditImage", "StudentProfile")" class="btn btn-light btn-sm rounded-circle edit-image-btn">
+                                        <i class="fas fa-camera"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <h2 class="text-white mb-1">@Model.Student.StudentName</h2>
+                                <p class="text-white-50 mb-1">Mã sinh viên: @Model.Student.StudentCode</p>
+                                <p class="text-white-50 mb-1">Lớp: @Model.Student.Class?.ClassName</p>
+                                <p class="text-white-50 mb-0">Email: @Model.Student.StudentEmail</p>
+                            </div>
+                            <div class="col-auto text-end">
+                                <div class="academic-status">
+                                    <span class="badge @(Model.AcademicStatus == "Tốt" ? "bg-success" : "bg-warning") fs-6 mb-2">
+                                        @Model.AcademicStatus
+                                    </span>
+                                    <div class="text-center">
+                                        <h3 class="text-white mb-0">@Model.GPA</h3>
+                                        <small class="text-white-50">Điểm trung bình tích lũy</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Quick Stats -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-book fa-2x text-primary mb-2"></i>
+                                <h4>@Model.TotalSubjects</h4>
+                                <p class="text-muted mb-0">Tổng số môn học</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                                <h4>@Model.CompletedSubjects</h4>
+                                <p class="text-muted mb-0">Đã hoàn thành</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card stat-card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-star fa-2x text-warning mb-2"></i>
+                                <h4>@Model.GPA</h4>
+                                <p class="text-muted mb-0">Điểm trung bình tích lũy</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Grades -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Điểm gần đây</h5>
+                        <a asp-action="Grades" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.RecentGrades.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Môn học</th>
+                                            <th>Điểm định tính</th>
+                                            <th>Điểm thi</th>
+                                            <th>Điểm chữ</th>
+                                            <th>Điểm GPA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var grade in Model.RecentGrades.Take(5))
+                                        {
+                                            <tr>
+                                                <td>@grade.Subject?.SubjectName</td>
+                                                <td>@grade.FormativeGrade.ToString("F2")</td>
+                                                <td>@grade.FinalGrade.ToString("F2")</td>
+                                                <td>
+                                                    <span class="badge bg-info">@grade.GradeToLetter</span>
+                                                </td>
+                                                <td>@grade.FourGradeScale.ToString("F2")</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted py-4">
+                                <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                                <p>Không có điểm nào.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thao tác nhanh</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a asp-action="Grades" class="btn btn-outline-primary">
+                                <i class="fas fa-chart-line me-2"></i>Xem tất cả điểm
+                            </a>
+                            <a asp-action="Schedule" class="btn btn-outline-success">
+                                <i class="fas fa-calendar-alt me-2"></i>Xem môn học
+                            </a>
+                            <a asp-area="User" asp-controller="UserDashboard" asp-action="Index" class="btn btn-outline-info">
+                                <i class="fas fa-tachometer-alt me-2"></i>Trang chủ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Information -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5 class="mb-0">Thông tin sinh viên</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <strong>Mã sinh viên:</strong><br>
+                                <span class="text-muted">@Model.Student.StudentCode</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Tên sinh viên:</strong><br>
+                                <span class="text-muted">@Model.Student.StudentName</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Giới tính:</strong><br>
+                                <span class="text-muted">@Model.Student.StudentSex</span>
+                            </li>
+                            <li class="mb-2">
+                                <strong>Email sinh viên:</strong><br>
+                                <span class="text-muted">@Model.Student.StudentEmail</span>
+                            </li>
+                            <li class="mb-0">
+                                <strong>Lớp:</strong><br>
+                                <span class="text-muted">@Model.Student.Class?.ClassName</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 15px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 10px;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .edit-image-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 2px solid #6366f1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .edit-image-btn:hover {
+            transform: scale(1.1);
+            background: #f8f9fa;
+        }
+
+        .academic-status .badge {
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .text-white-50 {
+            color: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        .stat-card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .btn {
+            border-radius: 6px;
+        }
+
+        .badge {
+            font-size: 0.75em;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+} 

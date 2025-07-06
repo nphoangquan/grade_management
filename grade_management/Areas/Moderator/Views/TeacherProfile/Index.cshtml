@@ -1,0 +1,384 @@
+@model grade_management.Models.ViewModels.TeacherProfileViewModel
+
+@{
+    ViewData["Title"] = "Hồ sơ giảng viên";
+}
+
+<!-- Page Header -->
+<div class="profile-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <div class="d-flex align-items-center">
+                    <div class="profile-avatar position-relative">
+                        @if (!string.IsNullOrEmpty(Model.ImagePath))
+                        {
+                            <img src="@Model.ImagePath" alt="Profile Picture" class="profile-image" />
+                        }
+                        else
+                        {
+                            var initials = string.IsNullOrEmpty(Model.TeacherName) ? "T" : 
+                                        (Model.TeacherName.Split(' ').Length > 1 ? 
+                                        Model.TeacherName.Split(' ')[0][0].ToString() + Model.TeacherName.Split(' ')[^1][0].ToString() : 
+                                        Model.TeacherName[0].ToString());
+                            <div class="profile-initials">@initials</div>
+                        }
+                        <a href="@Url.Action("EditImage", "TeacherProfile")" class="btn btn-light btn-sm rounded-circle edit-image-btn">
+                            <i class="fas fa-camera"></i>
+                        </a>
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-name">@Model.TeacherName</h1>
+                        <p class="profile-subtitle">Mã giảng viên: @Model.TeacherCode</p>
+                        <p class="profile-email">@Model.TeacherEmail</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <span class="badge bg-success fs-6">
+                    <i class="fas fa-chalkboard-teacher me-1"></i>
+                    Tài khoản giảng viên
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Content -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Main Profile Information -->
+        <div class="col-lg-8">
+            <!-- Teaching Statistics -->
+            <div class="card profile-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Thống kê giảng dạy
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <div class="stat-item">
+                                <div class="stat-number text-primary">@Model.TotalSubjectsTaught</div>
+                                <div class="stat-label">Môn học đang giảng dạy</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="stat-item">
+                                <div class="stat-number text-info">@Model.TotalClassesManaged</div>
+                                <div class="stat-label">Lớp đang giảng dạy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card profile-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Thao tác nhanh
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        @if (Model.CanViewStudents)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <a asp-area="Moderator" asp-controller="StudentManagement" asp-action="Index" class="action-card">
+                                    <div class="action-icon bg-primary">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h6>Xem sinh viên</h6>
+                                        <p class="text-muted mb-0">Xem thông tin sinh viên</p>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Model.CanViewReports)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <a asp-area="Moderator" asp-controller="TeacherProfile" asp-action="Subjects" class="action-card">
+                                    <div class="action-icon bg-success">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h6>Xem môn học</h6>
+                                        <p class="text-muted mb-0">Quản lý môn học</p>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        @if (Model.CanManageGrades)
+                        {
+                            <div class="col-md-6 mb-3">
+                                <a asp-area="Moderator" asp-controller="GradeManagement" asp-action="AllStudents" class="action-card">
+                                    <div class="action-icon bg-warning">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="action-content">
+                                        <h6>Xem điểm</h6>
+                                        <p class="text-muted mb-0">Xem điểm sinh viên</p>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                        <div class="col-md-6 mb-3">
+                            <a asp-area="Moderator" asp-controller="ClassManagement" asp-action="Index" class="action-card">
+                                <div class="action-icon bg-info">
+                                    <i class="fas fa-school"></i>
+                                </div>
+                                <div class="action-content">
+                                    <h6>Xem lớp</h6>
+                                    <p class="text-muted mb-0">Xem thông tin lớp</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Personal Details -->
+            <div class="card profile-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>
+                        Thông tin cá nhân
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="detail-item">
+                        <span class="detail-label">Mã giảng viên:</span>
+                        <span class="detail-value">@Model.TeacherCode</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Tên:</span>
+                        <span class="detail-value">@Model.TeacherName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Giới tính:</span>
+                        <span class="detail-value">@(Model.TeacherSex == "Male" ? "Nam" : Model.TeacherSex == "Female" ? "Nữ" : Model.TeacherSex)</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email giảng viên:</span>
+                        <span class="detail-value">@Model.TeacherEmail</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Information -->
+            <div class="card profile-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-alt me-2"></i>
+                        Thông tin tài khoản
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="detail-item">
+                        <span class="detail-label">Tên tài khoản:</span>
+                        <span class="detail-value">@Model.UserName</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Loại tài khoản:</span>
+                        <span class="detail-value">
+                            <span class="badge bg-success">Quản trị viên</span>
+                        </span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Email đã xác thực:</span>
+                        <span class="detail-value">
+                            @if (Model.EmailConfirmed)
+                            {
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check-circle me-1"></i>Đã xác thực
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>Chưa xác thực
+                                </span>
+                            }
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 2rem 0;
+            margin: -1.5rem -1.5rem 0 -1.5rem;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-initials {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .edit-image-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border: 2px solid #6366f1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            z-index: 1;
+        }
+
+        .edit-image-btn:hover {
+            transform: scale(1.1);
+            background: #f8f9fa;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-subtitle {
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .profile-email {
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        .profile-card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border-radius: 10px;
+        }
+
+        .profile-card .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+        }
+
+        .stat-item {
+            padding: 1rem 0;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .action-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: inherit;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 1rem;
+        }
+
+        .action-content h6 {
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+        }
+    </style>
+} 

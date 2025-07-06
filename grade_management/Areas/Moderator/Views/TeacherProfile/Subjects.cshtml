@@ -1,0 +1,250 @@
+@model IEnumerable<grade_management.Models.SubjectModel>
+
+@{
+    ViewData["Title"] = "Môn học - Hồ sơ giảng viên";
+    var teacherInfo = ViewBag.TeacherInfo as grade_management.Models.TeacherModel;
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2><i class="fas fa-book me-2"></i>Môn học đang giảng dạy</h2>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Hồ sơ giảng viên</a></li>
+                <li class="breadcrumb-item active">Môn học</li>
+            </ol>
+        </nav>
+    </div>
+    <div>
+        <span class="badge bg-success fs-6">@Model.Count() Môn học</span>
+    </div>
+</div>
+
+<!-- Teacher Info -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex align-items-center">
+            <div class="teacher-avatar me-3">
+                @{
+                    var initials = string.IsNullOrEmpty(teacherInfo.TeacherName) ? "T" : 
+                                  (teacherInfo.TeacherName.Split(' ').Length > 1 ? 
+                                   teacherInfo.TeacherName.Split(' ')[0][0].ToString() + teacherInfo.TeacherName.Split(' ')[^1][0].ToString() : 
+                                   teacherInfo.TeacherName[0].ToString());
+                }
+                <span>@initials</span>
+            </div>
+            <div>
+                <h5 class="mb-1">@teacherInfo.TeacherName</h5>
+                <p class="text-muted mb-0">Mã giảng viên: @teacherInfo.TeacherCode</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Subjects Grid -->
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var subject in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card subject-card h-100">
+                    <div class="card-body">
+                        <div class="subject-header mb-3">
+                            <div class="subject-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="subject-info">
+                                <h5 class="subject-name">@subject.SubjectName</h5>
+                                <p class="subject-code text-muted">@subject.SubjectCode</p>
+                            </div>
+                        </div>
+                        
+                        <div class="subject-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Tín chỉ:</span>
+                                <span class="detail-value">
+                                    <span class="badge bg-primary">@subject.SubjectCredits</span>
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Trạng thái:</span>
+                                <span class="detail-value">
+                                    @if (subject.SubjectStatus == "Open")
+                                    {
+                                        <span class="badge bg-success">@subject.SubjectStatus</span>
+                                    }
+                                    else if (subject.SubjectStatus == "Close")
+                                    {
+                                        <span class="badge bg-danger">@subject.SubjectStatus</span>
+                                    }
+                                    else if (subject.SubjectStatus == "Full")
+                                    {
+                                        <span class="badge bg-warning">@subject.SubjectStatus</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@subject.SubjectStatus</span>
+                                    }
+                                </span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(subject.SubjectTime))
+                            {
+                                <div class="detail-row">
+                                    <span class="detail-label">Thời gian:</span>
+                                    <span class="detail-value">
+                                        <span class="badge bg-info">@subject.SubjectTime</span>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <a asp-area="Moderator" asp-controller="SubjectManagement" asp-action="Details" asp-route-id="@subject.SubjectID" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i>Xem chi tiết
+                            </a>
+                            <a asp-area="Moderator" asp-controller="GradeManagement" asp-action="Index" asp-route-subjectId="@subject.SubjectID" 
+                               class="btn btn-sm btn-outline-success">
+                                <i class="fas fa-chart-line me-1"></i>Xem điểm
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="fas fa-book fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">Không có môn học nào</h5>
+            <p class="text-muted">Hiện tại không có môn học nào được giao cho bạn.</p>
+            <a asp-area="Moderator" asp-controller="SubjectManagement" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-eye me-1"></i>Xem tất cả môn học
+            </a>
+        </div>
+    </div>
+}
+
+@section Styles {
+    <style>
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .subject-card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            transition: all 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+        }
+
+        .subject-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-right: 1rem;
+        }
+
+        .subject-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #343a40;
+        }
+
+        .subject-code {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .subject-details {
+            border-top: 1px solid #f1f3f4;
+            padding-top: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .subject-description {
+            border-top: 1px solid #f1f3f4;
+            padding-top: 1rem;
+            font-style: italic;
+        }
+
+        .card-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumb-item a {
+            color: #6c757d;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: #007bff;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+        }
+    </style>
+} 

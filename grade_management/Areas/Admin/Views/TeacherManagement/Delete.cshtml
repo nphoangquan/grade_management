@@ -1,0 +1,120 @@
+@model grade_management.Models.TeacherModel
+
+@{
+    ViewData["Title"] = "Xóa giảng viên";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Xóa giảng viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Giảng viên</a></li>
+        <li class="breadcrumb-item active">Xóa</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-times me-1"></i>
+            Xác nhận xóa giảng viên
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger mb-4">
+                <h5 class="alert-heading">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Cảnh báo!
+                </h5>
+                <p class="mb-0">Bạn có chắc chắn muốn xóa giảng viên này? Hành động này không thể được hoàn tác.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Mã giảng viên</label>
+                        <p class="form-control-static">@Model.TeacherCode</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên</label>
+                        <p class="form-control-static">@Model.TeacherName</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <p class="form-control-static">@Model.TeacherEmail</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Khoa</label>
+                        <p class="form-control-static">
+                            @if (Model.Department != null)
+                            {
+                                <span>@Model.Department.DepartmentName</span>
+                                <small class="text-muted">(@Model.Department.DepartmentCode)</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có khoa</span>
+                            }
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giới tính</label>
+                        <p class="form-control-static">@Model.TeacherSex</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái tài khoản</label>
+                        <p class="form-control-static">
+                            @if (!string.IsNullOrEmpty(Model.UserId))
+                            {
+                                <span class="badge bg-success">Hoạt động</span>
+                                <small class="text-danger d-block mt-1">
+                                    <i class="fas fa-info-circle"></i>
+                                    Tài khoản người dùng liên kết sẽ được xóa.
+                                </small>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning">Không có tài khoản</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post">
+                <input type="hidden" asp-for="TeacherID" />
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Xóa giảng viên
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .form-control-static {
+            padding: 0.375rem 0;
+            margin-bottom: 0;
+            min-height: 24px;
+        }
+
+        .alert-danger {
+            background-color: rgba(var(--danger-rgb), 0.1);
+            border: 1px solid rgba(var(--danger-rgb), 0.15);
+            color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+        }
+    </style>
+} 

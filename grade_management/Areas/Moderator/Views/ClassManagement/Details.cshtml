@@ -1,0 +1,149 @@
+@model grade_management.Models.ClassModel
+
+@{
+    ViewData["Title"] = "Chi tiết lớp";
+}
+
+<div class="container">
+    <h1 class="page-title">Chi tiết lớp</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="section-title">Thông tin lớp</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Tên lớp</div>
+                            <div class="col-md-8">@Model.ClassName</div>
+                        </div>
+                    </div>
+
+                    @if (Model.Students != null && Model.Students.Any())
+                    {
+                        <div class="mb-4">
+                            <h5 class="section-title">Sinh viên</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tên sinh viên</th>
+                                            <th>Mã sinh viên</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var student in Model.Students)
+                                        {
+                                            <tr>
+                                                <td>@student.StudentName</td>
+                                                <td>@student.StudentCode</td>
+                                                <td>
+                                                    <a asp-area="Moderator" asp-controller="StudentManagement" asp-action="Details" asp-route-id="@student.StudentID" class="btn-action">
+                                                        <i class="fas fa-info-circle"></i> Xem
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-area="Moderator" asp-controller="ClassManagement" asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .text-muted {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-action:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+    </style>
+} 

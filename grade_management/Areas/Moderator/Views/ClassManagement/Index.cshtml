@@ -1,0 +1,122 @@
+@model IEnumerable<grade_management.Models.ClassModel>
+
+@{
+    ViewData["Title"] = "Xem lớp";
+}
+
+<div class="container">
+    <h1 class="page-title">Xem lớp</h1>
+
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        <div class="search-filter">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Tìm kiếm lớp...">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Tìm
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Any() && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Không tìm thấy lớp nào khớp với "@ViewData["CurrentFilter"]"
+        </div>
+    }
+
+    <div class="data-table">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tên lớp</th>
+                        <th>Sinh viên</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ClassName</td>
+                            <td>
+                                <span class="badge bg-info">
+                                    @(item.Students?.Count ?? 0) sinh viên
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.ClassID" class="btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .search-filter {
+            max-width: 300px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-action:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .text-danger:hover {
+            background-color: #fff5f7;
+        }
+
+        .badge {
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .bg-info {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+            color: #0dcaf0;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            border: 1px solid rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+} 

@@ -1,0 +1,96 @@
+@model IEnumerable<grade_management.Models.StudentModel>
+
+@{
+    ViewData["Title"] = "Thêm sinh viên vào môn học";
+    var subject = ViewBag.Subject as grade_management.Models.SubjectModel;
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Thêm sinh viên vào môn học</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Môn học</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@subject.SubjectID">Chi tiết</a></li>
+        <li class="breadcrumb-item active">Thêm sinh viên</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-plus me-1"></i>
+            Thêm sinh viên vào môn học
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">Thông tin môn học</h5>
+                <p class="mb-0">
+                    <strong>Mã môn học:</strong> @subject.SubjectCode<br />
+                    <strong>Tên môn học:</strong> @subject.SubjectName<br />
+                    <strong>Khoa:</strong> @subject.Department?.DepartmentName
+                </p>
+            </div>
+
+            <form asp-action="AddStudents" method="post">
+                <input type="hidden" name="id" value="@subject.SubjectID" />
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="selectAll">
+                                    </div>
+                                </th>
+                                <th>Mã sinh viên</th>
+                                <th>Tên sinh viên</th>
+                                <th>Email</th>
+                                <th>Lớp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var student in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="form-check">
+                                            <input class="form-check-input student-checkbox" type="checkbox" name="selectedStudents" value="@student.StudentID">
+                                        </div>
+                                    </td>
+                                    <td>@student.StudentCode</td>
+                                    <td>@student.StudentName</td>
+                                    <td>@student.StudentEmail</td>
+                                    <td>@student.Class?.ClassName</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a asp-action="Details" asp-route-id="@subject.SubjectID" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Thêm sinh viên
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Handle select all checkbox
+            $('#selectAll').change(function () {
+                $('.student-checkbox').prop('checked', $(this).prop('checked'));
+            });
+
+            // Update select all checkbox when individual checkboxes change
+            $('.student-checkbox').change(function () {
+                var allChecked = $('.student-checkbox:checked').length === $('.student-checkbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+        });
+    </script>
+} 

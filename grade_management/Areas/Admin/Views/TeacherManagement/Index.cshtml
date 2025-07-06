@@ -1,0 +1,136 @@
+@model IEnumerable<grade_management.Models.TeacherModel>
+
+@{
+    ViewData["Title"] = "Quản lý giảng viên";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản lý giảng viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item active">Giảng viên</li>
+    </ol>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i>
+                Danh sách giảng viên
+            </div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Thêm giảng viên
+            </a>
+        </div>
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="searchString" value="@ViewData["CurrentFilter"]" 
+                           placeholder="Tìm kiếm theo tên, mã, email, hoặc khoa..." />
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-search"></i> Tìm kiếm
+                    </button>
+                    @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                    {
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Xóa
+                        </a>
+                    }
+                </div>
+            </form>
+
+            @if (!Model.Any() && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Không tìm thấy giảng viên phù hợp với "@ViewData["CurrentFilter"]"
+                </div>
+            }
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="teachersTable">
+                    <thead>
+                        <tr>
+                            <th>Mã giảng viên</th>
+                            <th>Họ và tên</th>
+                            <th>Khoa</th>
+                            <th>Giới tính</th>
+                            <th>Email</th>
+                            <th>Tài khoản</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.TeacherCode</td>
+                                <td>@item.TeacherName</td>
+                                <td>
+                                    @if (item.Department != null)
+                                    {
+                                        <span>@item.Department.DepartmentName</span>
+                                        <small class="text-muted d-block">@item.Department.DepartmentCode</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không có khoa</span>
+                                    }
+                                </td>
+                                <td>@(item.TeacherSex == "Male" ? "Nam" : item.TeacherSex == "Female" ? "Nữ" : item.TeacherSex)</td>
+                                <td>@item.TeacherEmail</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.UserId))
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Không có tài khoản</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.TeacherID" class="btn btn-primary btn-sm" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="Details" asp-route-id="@item.TeacherID" class="btn btn-info btn-sm" title="Details">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.TeacherID" class="btn btn-danger btn-sm" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#teachersTable').DataTable({
+                "order": [[2, "asc"], [1, "asc"]], // Sắp xếp theo Khoa, sau đó theo Họ và tên
+                "pageLength": 10,
+                "language": {
+                    "search": "Filter:",
+                    "emptyTable": "Không tìm thấy giảng viên",
+                    "zeroRecords": "Không tìm thấy giảng viên phù hợp"
+                }
+            });
+        });
+    </script>
+} 

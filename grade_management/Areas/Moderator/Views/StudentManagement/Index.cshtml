@@ -1,0 +1,154 @@
+@model IEnumerable<grade_management.Models.StudentModel>
+
+@{
+    ViewData["Title"] = "Xem sinh viên";
+}
+
+<div class="container">
+    <h1 class="page-title">Xem sinh viên</h1>
+
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        <div class="search-filter">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Tìm kiếm sinh viên...">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any() && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Không tìm thấy sinh viên phù hợp với "@ViewData["CurrentFilter"]"
+        </div>
+    }
+
+    <div class="data-table">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã sinh viên</th>
+                        <th>Tên sinh viên</th>
+                        <th>Giới tính</th>
+                        <th>Địa chỉ email</th>
+                        <th>Tên lớp</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.StudentCode)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StudentName)</td>
+                            <td>@(item.StudentSex == "Male" ? "Nam" : item.StudentSex == "Female" ? "Nữ" : item.StudentSex)</td>
+                            <td>@Html.DisplayFor(modelItem => item.StudentEmail)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Class.ClassName)</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.StudentID" class="btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .search-filter {
+            max-width: 300px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-action:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .text-danger:hover {
+            background-color: #fff5f7;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            border: 1px solid rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .btn-filter {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-filter:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+} 

@@ -1,0 +1,77 @@
+@model grade_management.Models.ViewModels.EditImageViewModel
+
+@{
+    ViewData["Title"] = "Chỉnh sửa ảnh đại diện";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Cập nhật ảnh đại diện</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditImage" method="post" enctype="multipart/form-data">
+                        <div class="text-center mb-4">
+                            @if (!string.IsNullOrEmpty(Model.CurrentImagePath))
+                            {
+                                <img src="@Model.CurrentImagePath" alt="Current Profile Picture" class="img-fluid rounded-circle current-image mb-3" style="width: 200px; height: 200px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <div class="default-image mb-3">
+                                    <i class="fas fa-user-graduate fa-5x text-primary"></i>
+                                </div>
+                            }
+                            
+                            <div class="mb-3">
+                                <label asp-for="ImageFile" class="form-label">Chọn ảnh mới</label>
+                                <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Vui lòng chọn ảnh vuông cho kết quả tốt nhất. Ảnh sẽ được hiển thị dưới dạng hình tròn.
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Lưu thay đổi
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Quay lại hồ sơ
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Preview image before upload
+        document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentImage = document.querySelector('.current-image');
+                    if (currentImage) {
+                        currentImage.src = e.target.result;
+                    } else {
+                        const defaultImage = document.querySelector('.default-image');
+                        if (defaultImage) {
+                            defaultImage.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded-circle" style="width: 200px; height: 200px; object-fit: cover;" />`;
+                        }
+                    }
+                }
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+    </script>
+} 

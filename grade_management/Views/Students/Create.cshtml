@@ -1,0 +1,222 @@
+@model grade_management.Models.StudentModel
+
+@{
+    ViewData["Title"] = "Create Student";
+}
+
+<div class="container">
+    <h1 class="page-title">Create New Student</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    <form asp-action="Create" id="createStudentForm">
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                <h5 class="alert-heading">Please correct the following errors:</h5>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label asp-for="StudentName" class="form-label required"></label>
+                            <input asp-for="StudentName" class="form-control" placeholder="Enter student name" />
+                            <span asp-validation-for="StudentName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StudentSex" class="form-label required"></label>
+                            <select asp-for="StudentSex" class="form-select">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="StudentSex" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="StudentEmail" class="form-label required"></label>
+                            <input asp-for="StudentEmail" class="form-control" type="email" placeholder="Enter email address" />
+                            <span asp-validation-for="StudentEmail" class="text-danger"></span>
+                            <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ClassID" class="form-label required"></label>
+                            @if (ViewBag.Classes != null && ((SelectList)ViewBag.Classes).Any())
+                            {
+                                <select asp-for="ClassID" class="form-select" asp-items="ViewBag.Classes">
+                                    <option value="">Select Class</option>
+                                </select>
+                                <span asp-validation-for="ClassID" class="text-danger"></span>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    No classes available. Please <a asp-controller="Classes" asp-action="Create">create a class</a> first.
+                                </div>
+                            }
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn-add" id="submitButton">
+                                <i class="fas fa-save"></i> Create Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-label.required::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.15);
+        }
+
+        .text-danger {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .alert {
+            border-radius: 6px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-heading {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .input-validation-error {
+            border-color: var(--danger-color);
+        }
+
+        .field-validation-error {
+            color: var(--danger-color);
+        }
+    </style>
+}
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $(document).ready(function() {
+            // Client-side validation
+            $("#createStudentForm").validate({
+                rules: {
+                    StudentName: {
+                        required: true,
+                        minlength: 2,
+                        maxlength: 100
+                    },
+                    StudentSex: "required",
+                    StudentEmail: {
+                        required: true,
+                        email: true
+                    },
+                    ClassID: "required"
+                },
+                messages: {
+                    ClassID: {
+                        required: "Please select a class"
+                    }
+                },
+                errorElement: "span",
+                errorClass: "text-danger",
+                highlight: function(element) {
+                    $(element).addClass("input-validation-error");
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass("input-validation-error");
+                }
+            });
+
+            // Disable submit button on form submit to prevent double submission
+            $("#createStudentForm").on("submit", function() {
+                if ($(this).valid()) {
+                    $("#submitButton").prop("disabled", true);
+                    $("#submitButton").html('<i class="fas fa-spinner fa-spin"></i> Creating...');
+                }
+            });
+        });
+    </script>
+} 

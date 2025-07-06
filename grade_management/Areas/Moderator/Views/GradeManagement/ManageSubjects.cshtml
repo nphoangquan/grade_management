@@ -1,0 +1,203 @@
+@model grade_management.Models.StudentGradesViewModel
+
+@{
+    ViewData["Title"] = $"Quản lý môn học cho {Model.Student.StudentName}";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Quản lý môn học</h1>
+            <p class="text-muted">
+                <i class="fas fa-user me-2"></i>@Model.Student.StudentName
+                <span class="mx-3">|</span>
+                <i class="fas fa-id-card me-2"></i>@Model.Student.StudentCode
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a asp-action="StudentGrades" asp-route-studentId="@Model.Student.StudentID" class="btn btn-primary">
+                <i class="fas fa-graduation-cap me-2"></i>Xem điểm
+            </a>
+            <a asp-action="ClassStudents" asp-route-classId="@Model.Student.ClassID" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại lớp
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Available Subjects -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Môn học có sẵn</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.AvailableSubjects.Any())
+                    {
+                        <p class="text-muted mb-0">Không có môn học có sẵn để thêm.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var subject in Model.AvailableSubjects.Where(s => !Model.ExistingGrades.Any(g => g.SubjectID == s.SubjectID)))
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">@subject.SubjectName</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-code me-2"></i>@subject.SubjectCode
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-clock me-2"></i>@subject.SubjectTime
+                                                <span class="mx-2">|</span>
+                                                <span class="badge @(subject.SubjectStatus == "Open" ? "bg-success" : 
+                                                                   subject.SubjectStatus == "Full" ? "bg-warning" : "bg-danger")">
+                                                    @subject.SubjectStatus
+                                                </span>
+                                            </small>
+                                        </div>
+                                        @if (subject.SubjectStatus == "Open")
+                                        {
+                                            <form asp-action="AddSubject" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="studentId" value="@Model.Student.StudentID" />
+                                                <input type="hidden" name="subjectId" value="@subject.SubjectID" />
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-plus"></i> Thêm
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn btn-sm btn-secondary" disabled
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" 
+                                                    title="Môn học này đang ở trạng thái @subject.SubjectStatus và không thể được thêm">
+                                                <i class="fas fa-lock"></i> @subject.SubjectStatus
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrolled Subjects -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Môn học đã đăng ký</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.ExistingGrades.Any())
+                    {
+                        <p class="text-muted mb-0">Không có môn học đã đăng ký.</p>
+                    }
+                    else
+                    {
+                        <div class="list-group">
+                            @foreach (var grade in Model.ExistingGrades)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">@grade.Subject.SubjectName</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-code me-2"></i>@grade.Subject.SubjectCode
+                                                <span class="mx-2">|</span>
+                                                <i class="fas fa-clock me-2"></i>@grade.Subject.SubjectTime
+                                                <span class="mx-2">|</span>
+                                                <span class="badge @(grade.Subject.SubjectStatus == "Open" ? "bg-success" : 
+                                                                   grade.Subject.SubjectStatus == "Full" ? "bg-warning" : "bg-danger")">
+                                                    @grade.Subject.SubjectStatus
+                                                </span>
+                                            </small>
+                                        </div>
+                                        <div class="btn-group">
+                                            <a asp-action="ModifyGrade" 
+                                               asp-route-studentId="@Model.Student.StudentID" 
+                                               asp-route-subjectId="@grade.SubjectID" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i> Sửa điểm
+                                            </a>
+                                            <form asp-action="DeleteGrade" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="studentId" value="@Model.Student.StudentID" />
+                                                <input type="hidden" name="subjectId" value="@grade.SubjectID" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa môn học này không?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem;
+        }
+
+        .list-group-item {
+            border-color: var(--border-color);
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .btn-group .btn {
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .badge {
+            padding: 0.5em 0.8em;
+            font-weight: 500;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+} 

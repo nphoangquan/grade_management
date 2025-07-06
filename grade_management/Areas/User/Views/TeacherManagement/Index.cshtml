@@ -1,0 +1,124 @@
+@model IEnumerable<grade_management.Models.TeacherModel>
+
+@{
+    ViewData["Title"] = "Xem giảng viên";
+}
+
+<div class="container">
+    <h1 class="page-title">Xem giảng viên</h1>
+
+    <div class="d-flex justify-content-end align-items-center mb-4">
+        <div class="search-filter">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Tìm kiếm giảng viên...">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Any() && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Không tìm thấy giảng viên phù hợp với "@ViewData["CurrentFilter"]"
+        </div>
+    }
+
+    <div class="data-table">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Tên giảng viên</th>
+                        <th>Giới tính</th>
+                        <th>Email giảng viên</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.TeacherName</td>
+                            <td>@item.TeacherSex</td>
+                            <td>@item.TeacherEmail</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.TeacherID" class="btn-action">
+                                    <i class="fas fa-info-circle"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .search-filter {
+            max-width: 300px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-action:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        .text-danger:hover {
+            background-color: #fff5f7;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            border: 1px solid rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+} 

@@ -1,0 +1,208 @@
+@model grade_management.Models.TeacherModel
+
+@{
+    ViewData["Title"] = "Chi tiết giảng viên";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Chi tiết giảng viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Giảng viên</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Thông tin giảng viên
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-4">
+                            <div class="teacher-image-container">
+                                @if (!string.IsNullOrEmpty(Model.ImagePath))
+                                {
+                                    <img src="@Model.ImagePath" alt="Teacher Photo" class="teacher-image img-fluid rounded-circle" />
+                                }
+                                else
+                                {
+                                    <div class="teacher-image-placeholder">
+                                        <i class="fas fa-user-tie fa-4x"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Mã giảng viên:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @Model.TeacherCode
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Họ và tên:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @Model.TeacherName
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Khoa:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @if (Model.Department != null)
+                                    {
+                                        <span>@Model.Department.DepartmentName</span>
+                                        <span class="text-muted">(@Model.Department.DepartmentCode)</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Không có khoa</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Giới tính:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @(Model.TeacherSex == "Male" ? "Nam" : Model.TeacherSex == "Female" ? "Nữ" : Model.TeacherSex)
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Email:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @Model.TeacherEmail
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <strong>Tài khoản người dùng:</strong>
+                                </div>
+                                <div class="col-md-9">
+                                    @if (!string.IsNullOrEmpty(Model.UserId))
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Không có tài khoản</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <a asp-action="Edit" asp-route-id="@Model.TeacherID" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Sửa
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .teacher-image-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border: 3px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .teacher-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .teacher-image-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            background-color: #f8f9fa;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+    </style>
+} 

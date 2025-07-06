@@ -1,0 +1,209 @@
+@model grade_management.Models.GradeModel
+
+@{
+    ViewData["Title"] = "Sửa điểm";
+}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="page-title">Sửa điểm</h1>
+            <p class="text-muted">
+                <i class="fas fa-user me-2"></i>@Model.Student.StudentName
+                <span class="mx-3">|</span>
+                <i class="fas fa-book me-2"></i>@Model.Subject.SubjectName
+            </p>
+        </div>
+        <div>
+            <a asp-action="StudentGrades" asp-route-studentId="@Model.StudentID" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Quay lại điểm
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="ModifyGrade" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <input type="hidden" asp-for="GradeID" />
+                        <input type="hidden" asp-for="StudentID" />
+                        <input type="hidden" asp-for="SubjectID" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="FormativeGrade" class="form-label"></label>
+                                    <input asp-for="FormativeGrade" class="form-control" type="number" step="0.1" min="0" max="10" required />
+                                    <span asp-validation-for="FormativeGrade" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="FinalGrade" class="form-label"></label>
+                                    <input asp-for="FinalGrade" class="form-control" type="number" step="0.1" min="0" max="10" required />
+                                    <span asp-validation-for="FinalGrade" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="TenGradeScale" class="form-label"></label>
+                                    <input asp-for="TenGradeScale" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="FourGradeScale" class="form-label"></label>
+                                    <input asp-for="FourGradeScale" class="form-control" readonly />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label asp-for="GradeToLetter" class="form-label"></label>
+                                    <input asp-for="GradeToLetter" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <a asp-action="StudentGrades" asp-route-studentId="@Model.StudentID" class="btn btn-secondary me-2">
+                                <i class="fas fa-times me-1"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Lưu thay đổi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function () {
+            // Function to calculate grades
+            function calculateGrades() {
+                var formativeGrade = parseFloat($('#FormativeGrade').val()) || 0;
+                var finalGrade = parseFloat($('#FinalGrade').val()) || 0;
+                
+                // Validate input ranges
+                if (formativeGrade < 0 || formativeGrade > 10) {
+                    $('#FormativeGrade').addClass('is-invalid');
+                    return;
+                } else {
+                    $('#FormativeGrade').removeClass('is-invalid');
+                }
+                
+                if (finalGrade < 0 || finalGrade > 10) {
+                    $('#FinalGrade').addClass('is-invalid');
+                    return;
+                } else {
+                    $('#FinalGrade').removeClass('is-invalid');
+                }
+                
+                // Calculate 10-scale grade
+                var tenGradeScale = (formativeGrade + finalGrade) / 2;
+                
+                // Set the calculated 10-scale grade with animation
+                $('#TenGradeScale')
+                    .val(tenGradeScale.toFixed(1))
+                    .addClass('highlight')
+                    .delay(500)
+                    .queue(function() {
+                        $(this).removeClass('highlight');
+                        $(this).dequeue();
+                    });
+                
+                // Calculate letter grade and 4-scale grade
+                var letterGrade = '';
+                var fourGradeScale = 0;
+                
+                if (tenGradeScale >= 8.5 && tenGradeScale <= 10) {
+                    letterGrade = 'A';
+                    fourGradeScale = 4.0;
+                } else if (tenGradeScale >= 7.8 && tenGradeScale <= 8.4) {
+                    letterGrade = 'B+';
+                    fourGradeScale = 3.5;
+                } else if (tenGradeScale >= 7.0 && tenGradeScale <= 7.7) {
+                    letterGrade = 'B';
+                    fourGradeScale = 3.0;
+                } else if (tenGradeScale >= 6.3 && tenGradeScale <= 6.9) {
+                    letterGrade = 'C+';
+                    fourGradeScale = 2.5;
+                } else if (tenGradeScale >= 5.5 && tenGradeScale <= 6.2) {
+                    letterGrade = 'C';
+                    fourGradeScale = 2.0;
+                } else if (tenGradeScale >= 4.8 && tenGradeScale <= 5.4) {
+                    letterGrade = 'D+';
+                    fourGradeScale = 1.5;
+                } else if (tenGradeScale >= 4.0 && tenGradeScale <= 4.7) {
+                    letterGrade = 'D';
+                    fourGradeScale = 1.0;
+                } else if (tenGradeScale >= 3.0 && tenGradeScale <= 3.9) {
+                    letterGrade = 'F+';
+                    fourGradeScale = 0.5;
+                } else {
+                    letterGrade = 'F';
+                    fourGradeScale = 0.0;
+                }
+                
+                // Set the calculated values with animation
+                $('#GradeToLetter')
+                    .val(letterGrade)
+                    .addClass('highlight')
+                    .delay(500)
+                    .queue(function() {
+                        $(this).removeClass('highlight');
+                        $(this).dequeue();
+                    });
+                    
+                $('#FourGradeScale')
+                    .val(fourGradeScale.toFixed(1))
+                    .addClass('highlight')
+                    .delay(500)
+                    .queue(function() {
+                        $(this).removeClass('highlight');
+                        $(this).dequeue();
+                    });
+            }
+            
+            // Calculate grades when formative or final grade changes
+            $('#FormativeGrade, #FinalGrade').on('input', calculateGrades);
+            
+            // Initial calculation
+            calculateGrades();
+        });
+    </script>
+    
+    <style>
+        .highlight {
+            background-color: #fff3cd;
+            transition: background-color 0.5s ease;
+        }
+    </style>
+} 

@@ -1,0 +1,144 @@
+@model grade_management.Models.SubjectModel
+
+@{
+    ViewData["Title"] = "Chi tiết môn học";
+}
+
+<div class="container">
+    <h1 class="page-title">Chi tiết môn học</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="section-title">Thông tin môn học</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Mã môn học</div>
+                            <div class="col-md-8">@Model.SubjectCode</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Tên môn học</div>
+                            <div class="col-md-8">@Model.SubjectName</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Trạng thái</div>
+                            <div class="col-md-8">
+                                <span class="badge @(Model.SubjectStatus == "Open" ? "bg-success" : Model.SubjectStatus == "Full" ? "bg-warning" : "bg-danger")">
+                                    @Model.SubjectStatus
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Giờ học</div>
+                            <div class="col-md-8">@Model.SubjectTime</div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Tín chỉ</div>
+                            <div class="col-md-8">@Model.SubjectCredits</div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .text-muted {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .btn-add {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-add:hover {
+            background-color: var(--primary-dark);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .bg-success {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+            color: #198754;
+        }
+
+        .bg-warning {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+            color: #ffc107;
+        }
+
+        .bg-danger {
+            background-color: rgba(220, 53, 69, 0.1) !important;
+            color: #dc3545;
+        }
+    </style>
+} 

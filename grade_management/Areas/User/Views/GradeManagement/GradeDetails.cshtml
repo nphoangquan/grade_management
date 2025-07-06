@@ -1,0 +1,203 @@
+@model grade_management.Models.GradeModel
+
+@{
+    ViewData["Title"] = "Chi tiết điểm";
+}
+
+<div class="container">
+    <h1 class="page-title">Chi tiết điểm</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="grade-details">
+                        <div class="detail-group">
+                            <label class="detail-label">Tên sinh viên</label>
+                            <div class="detail-value">@Model.Student.StudentName</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Mã sinh viên</label>
+                            <div class="detail-value">@Model.Student.StudentCode</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Lớp</label>
+                            <div class="detail-value">@(Model.Student.Class?.ClassName ?? "Not Assigned")</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Tên môn học</label>
+                            <div class="detail-value">@Model.Subject.SubjectName</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Mã môn học</label>
+                            <div class="detail-value">@Model.Subject.SubjectCode</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Tín chỉ</label>
+                            <div class="detail-value">@Model.Subject.SubjectCredits</div>
+                        </div>
+
+                        <div class="detail-group grades-section">
+                            <label class="detail-label">Điểm quá trình</label>
+                            <div class="detail-value grade-score">@Model.FormativeGrade.ToString("F2")</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Điểm cuối kỳ</label>
+                            <div class="detail-value grade-score">@Model.FinalGrade.ToString("F2")</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Điểm 10</label>
+                            <div class="detail-value grade-score highlight">@Model.TenGradeScale.ToString("F2")</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Điểm 4</label>
+                            <div class="detail-value grade-score">@Model.FourGradeScale.ToString("F2")</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Điểm chữ</label>
+                            <div class="detail-value">
+                                <span class="badge grade-badge @(GetGradeBadgeClass(Model.GradeToLetter))">
+                                    @Model.GradeToLetter
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a asp-area="User" asp-controller="GradeManagement" asp-action="StudentGrades" asp-route-studentId="@Model.StudentID" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại điểm sinh viên
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .grade-details {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .detail-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .grade-score {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .highlight {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+
+        .grades-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .grade-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .grade-a { background-color: #28a745 !important; color: white !important; }
+        .grade-b { background-color: #17a2b8 !important; color: white !important; }
+        .grade-c { background-color: #ffc107 !important; color: #000 !important; }
+        .grade-d { background-color: #fd7e14 !important; color: white !important; }
+        .grade-f { background-color: #dc3545 !important; color: white !important; }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem !important;
+        }
+    </style>
+}
+
+@functions {
+    private string GetGradeBadgeClass(string letterGrade)
+    {
+        if (string.IsNullOrEmpty(letterGrade))
+            return "bg-secondary";
+            
+        return letterGrade switch
+        {
+            "A" => "grade-a",
+            "B+" => "grade-b",
+            "B" => "grade-b", 
+            "C+" => "grade-c",
+            "C" => "grade-c",
+            "D+" => "grade-d",
+            "D" => "grade-d",
+            "F+" => "grade-f",
+            "F" => "grade-f",
+            _ => "bg-secondary"
+        };
+    }
+} 

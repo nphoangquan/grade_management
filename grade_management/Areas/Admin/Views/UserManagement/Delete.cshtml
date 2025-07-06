@@ -1,0 +1,114 @@
+@using grade_management.Areas.Admin.Controllers
+@model DeleteUserViewModel
+
+@{
+    ViewData["Title"] = "Xóa tài khoản";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Xóa tài khoản</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Quản lý người dùng</a></li>
+        <li class="breadcrumb-item active">Xóa tài khoản</li>
+    </ol>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="alert alert-danger mb-4">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle"></i> Cảnh báo!
+                        </h4>
+                        <p class="mb-0">Bạn có chắc chắn muốn xóa tài khoản này? Thao tác này không thể hoàn tác.</p>
+                    </div>
+
+                    <div class="user-details">
+                        <div class="detail-group">
+                            <label class="detail-label">Tên người dùng</label>
+                            <div class="detail-value">@Model.UserName</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Email</label>
+                            <div class="detail-value">@Model.Email</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Vai trò</label>
+                            <div class="detail-value">
+                                @foreach (var role in Model.Roles)
+                                {
+                                    <span class="badge bg-primary me-1">@role</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="UserId" />
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Quay lại
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Xóa tài khoản
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .alert-danger {
+            background-color: #fff5f7;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            border-radius: 6px;
+        }
+
+        .alert-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-details {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .detail-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+        }
+    </style>
+} 

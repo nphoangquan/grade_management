@@ -1,0 +1,115 @@
+@model IEnumerable<grade_management.Models.DepartmentModel>
+
+@{
+    ViewData["Title"] = "Quản lý khoa";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Quản lý khoa</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item active">Khoa</li>
+    </ol>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i>
+                Danh sách khoa
+            </div>
+            <div>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Tạo khoa mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <form asp-action="Index" method="get" class="d-flex">
+                        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Tìm kiếm theo mã hoặc tên..." />
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                        @if (!string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+                        {
+                            <a asp-action="Index" class="btn btn-secondary ms-2">Xóa</a>
+                        }
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="departmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Mã khoa</th>
+                            <th>Tên khoa</th>
+                            <th>Lớp</th>
+                            <th>Sinh viên</th>
+                            <th>Giảng viên</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.DepartmentCode</td>
+                                <td>@item.DepartmentName</td>
+                                <td>@(item.Classes?.Count ?? 0)</td>
+                                <td>@(item.Students?.Count ?? 0)</td>
+                                <td>@(item.Teachers?.Count ?? 0)</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.DepartmentID" class="btn btn-info btn-sm">
+                                            <i class="fas fa-info-circle"></i> Chi tiết
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.DepartmentID" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Sửa
+                                        </a>
+                                        @if ((item.Classes?.Count ?? 0) == 0 && (item.Students?.Count ?? 0) == 0 && (item.Teachers?.Count ?? 0) == 0)
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@item.DepartmentID" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-danger btn-sm" disabled title="Không thể xóa khoa có liên kết">
+                                                <i class="fas fa-trash"></i> Xóa
+                                            </button>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#departmentsTable').DataTable({
+                "order": [[1, "asc"]]
+            });
+        });
+    </script>
+} 

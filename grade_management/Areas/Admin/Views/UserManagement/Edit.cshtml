@@ -1,0 +1,107 @@
+@using grade_management.Areas.Admin.Controllers
+@model EditUserRoleViewModel
+
+@{
+    ViewData["Title"] = "Sửa vai trò người dùng";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sửa vai trò người dùng</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Quản lý người dùng</a></li>
+        <li class="breadcrumb-item active">Sửa vai trò</li>
+    </ol>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-edit me-1"></i>
+            Sửa vai trò cho người dùng
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Tên người dùng</label>
+                        <input type="text" class="form-control" value="@Model.UserName" readonly />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Email người dùng</label>
+                        <input type="text" class="form-control" value="@Model.Email" readonly />
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="UserId" />
+                <input type="hidden" asp-for="UserName" />
+                <input type="hidden" asp-for="Email" />
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Chọn vai trò</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-label required">Vai trò</label>
+                                    <select name="SelectedRole" class="form-select" required>
+                                        <option value="">Chọn vai trò</option>
+                                        @foreach (var role in Model.Roles)
+                                        {
+                                            if (role.IsSelected)
+                                            {
+                                                <option value="@role.RoleName" selected>@role.RoleName</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@role.RoleName">@role.RoleName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Lưu thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .form-label.required::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.15);
+        }
+    </style>
+} 

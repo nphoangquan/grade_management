@@ -1,0 +1,163 @@
+@model grade_management.Models.SubjectModel
+
+@{
+    ViewData["Title"] = "Xóa môn học";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Xóa môn học</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Môn học</a></li>
+        <li class="breadcrumb-item active">Xóa</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-trash me-1"></i>
+            Xác nhận xóa môn học
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger mb-4">
+                <h5 class="alert-heading d-flex align-items-center">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Cảnh báo!
+                </h5>
+                <p class="mb-0">Bạn có chắc chắn muốn xóa môn học này? Thao tác này không thể hoàn tác.</p>
+            </div>
+
+            @if (Model.Grades != null && Model.Grades.Any())
+            {
+                <div class="alert alert-warning mb-4">
+                    <h5 class="alert-heading d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        Lưu ý quan trọng
+                    </h5>
+                    <p class="mb-0">Môn học này có điểm. Bạn phải xóa tất cả điểm trước khi xóa môn học này.</p>
+                </div>
+            }
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="border-bottom pb-2 mb-4">Thông tin cơ bản</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Mã môn học</dt>
+                        <dd class="col-sm-8">@Model.SubjectCode</dd>
+
+                        <dt class="col-sm-4">Tên môn học</dt>
+                        <dd class="col-sm-8">@Model.SubjectName</dd>
+
+                        <dt class="col-sm-4">Khoa</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Department != null)
+                            {
+                                <div>@Model.Department.DepartmentName</div>
+                                <small class="text-muted">@Model.Department.DepartmentCode</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không có khoa</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Tín chỉ</dt>
+                        <dd class="col-sm-8">@Model.SubjectCredits</dd>
+                    </dl>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="border-bottom pb-2 mb-4">Thông tin bổ sung</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">Loại môn học</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-info">@Model.SubjectType</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Trạng thái</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.SubjectStatus == "Open" ? "bg-success" : Model.SubjectStatus == "Full" ? "bg-warning" : "bg-danger")">
+                                @Model.SubjectStatus
+                            </span>
+                        </dd>
+
+                        <dt class="col-sm-4">Giờ học</dt>
+                        <dd class="col-sm-8">
+                            @if (!string.IsNullOrEmpty(Model.SubjectTime))
+                            {
+                                <span class="badge bg-secondary">@Model.SubjectTime</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Không xác định</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form asp-action="Delete" class="d-flex justify-content-end gap-2 mt-4">
+                <input type="hidden" asp-for="SubjectID" />
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                <button type="submit" class="btn btn-danger" @(Model.Grades != null && Model.Grades.Any() ? "disabled" : "")>
+                    <i class="fas fa-trash"></i> Xóa môn học
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-weight: 500;
+        }
+
+        .bg-success {
+            background-color: rgba(var(--success-rgb), 0.1) !important;
+            color: var(--success);
+            border: 1px solid rgba(var(--success-rgb), 0.2);
+        }
+
+        .bg-warning {
+            background-color: rgba(var(--warning-rgb), 0.1) !important;
+            color: var(--warning);
+            border: 1px solid rgba(var(--warning-rgb), 0.2);
+        }
+
+        .bg-danger {
+            background-color: rgba(var(--danger-rgb), 0.1) !important;
+            color: var(--danger);
+            border: 1px solid rgba(var(--danger-rgb), 0.2);
+        }
+
+        .bg-info {
+            background-color: rgba(var(--info-rgb), 0.1) !important;
+            color: var(--info);
+            border: 1px solid rgba(var(--info-rgb), 0.2);
+        }
+
+        .bg-secondary {
+            background-color: rgba(var(--secondary-rgb), 0.1) !important;
+            color: var(--secondary);
+            border: 1px solid rgba(var(--secondary-rgb), 0.2);
+        }
+
+        dt {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        dd {
+            margin-bottom: 1rem;
+        }
+
+        .alert-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+} 

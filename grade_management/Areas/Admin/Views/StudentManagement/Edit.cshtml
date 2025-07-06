@@ -1,0 +1,112 @@
+@model grade_management.Models.StudentModel
+
+@{
+    ViewData["Title"] = "Sửa sinh viên";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sửa sinh viên</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Sinh viên</a></li>
+        <li class="breadcrumb-item active">Sửa</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-user-edit me-1"></i>
+            Sửa thông tin sinh viên
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="StudentID" />
+                <input type="hidden" asp-for="UserId" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="StudentCode" class="control-label">Mã sinh viên</label>
+                            <input asp-for="StudentCode" class="form-control" readonly />
+                            <span asp-validation-for="StudentCode" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="StudentName" class="control-label">Họ và tên</label>
+                            <input asp-for="StudentName" class="form-control" />
+                            <span asp-validation-for="StudentName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="StudentEmail" class="control-label">Email sinh viên</label>
+                            <input asp-for="StudentEmail" class="form-control" />
+                            <span asp-validation-for="StudentEmail" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="DepartmentID" class="control-label">Khoa</label>
+                            <select asp-for="DepartmentID" class="form-select" asp-items="ViewBag.Departments">
+                                <option value="">Chọn khoa</option>
+                            </select>
+                            <span asp-validation-for="DepartmentID" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ClassID" class="control-label">Lớp</label>
+                            <select asp-for="ClassID" class="form-select" asp-items="ViewBag.Classes">
+                                <option value="">Chọn lớp</option>
+                            </select>
+                            <span asp-validation-for="ClassID" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="StudentSex" class="control-label">Giới tính</label>
+                            <select asp-for="StudentSex" class="form-select">
+                                <option value="">Chọn giới tính</option>
+                                <option value="Male">Nam</option>
+                                <option value="Female">Nữ</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                            <span asp-validation-for="StudentSex" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Lưu thay đổi
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Quay lại
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        // Update classes when department changes
+        $(document).ready(function() {
+            $('#DepartmentID').change(function() {
+                var departmentId = $(this).val();
+                if (departmentId) {
+                    $.get('/Admin/StudentManagement/GetClassesByDepartment/' + departmentId, function(data) {
+                        var classSelect = $('#ClassID');
+                        classSelect.empty();
+                        classSelect.append($('<option></option>').val('').text('Select Class'));
+                        $.each(data, function(index, item) {
+                            classSelect.append($('<option></option>').val(item.value).text(item.text));
+                        });
+                    });
+                } else {
+                    $('#ClassID').empty().append($('<option></option>').val('').text('Select Class'));
+                }
+            });
+        });
+    </script>
+} 

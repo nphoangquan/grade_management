@@ -1,0 +1,158 @@
+@model grade_management.Models.DepartmentModel
+
+@{
+    ViewData["Title"] = "Chi tiết khoa";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Chi tiết khoa</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">Bảng điều khiển</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Khoa</a></li>
+        <li class="breadcrumb-item active">Chi tiết</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Thông tin khoa
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-2">Mã khoa</dt>
+                        <dd class="col-sm-10">@Model.DepartmentCode</dd>
+
+                        <dt class="col-sm-2">Tên khoa</dt>
+                        <dd class="col-sm-10">@Model.DepartmentName</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-users me-1"></i>
+                    Lớp (@(Model.Classes?.Count ?? 0))
+                </div>
+                <div class="card-body">
+                    @if (Model.Classes != null && Model.Classes.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Tên lớp</th>
+                                        <th>Sinh viên</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var classItem in Model.Classes.OrderBy(c => c.ClassName))
+                                    {
+                                        <tr>
+                                            <td>@classItem.ClassName</td>
+                                            <td>@(classItem.Students?.Count ?? 0)</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Không có lớp nào trong khoa này.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-user-graduate me-1"></i>
+                    Sinh viên (@(Model.Students?.Count ?? 0))
+                </div>
+                <div class="card-body">
+                    @if (Model.Students != null && Model.Students.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Mã sinh viên</th>
+                                        <th>Tên sinh viên</th>
+                                        <th>Lớp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var student in Model.Students.OrderBy(s => s.StudentName))
+                                    {
+                                        <tr>
+                                            <td>@student.StudentCode</td>
+                                            <td>@student.StudentName</td>
+                                            <td>@(student.Class?.ClassName ?? "-")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Không có sinh viên nào trong khoa này.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chalkboard-teacher me-1"></i>
+                    Giảng viên (@(Model.Teachers?.Count ?? 0))
+                </div>
+                <div class="card-body">
+                    @if (Model.Teachers != null && Model.Teachers.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Mã giảng viên</th>
+                                        <th>Tên giảng viên</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var teacher in Model.Teachers.OrderBy(t => t.TeacherName))
+                                    {
+                                        <tr>
+                                            <td>@teacher.TeacherCode</td>
+                                            <td>@teacher.TeacherName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Không có giảng viên nào trong khoa này.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.DepartmentID" class="btn btn-warning">
+            <i class="fas fa-edit"></i> Sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Quay lại
+        </a>
+    </div>
+</div> 

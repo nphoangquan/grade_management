@@ -1,0 +1,154 @@
+@model grade_management.Models.ClassModel
+
+@{
+    ViewData["Title"] = "Xóa lớp";
+}
+
+<div class="container">
+    <h1 class="page-title">Xóa lớp</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger mb-4" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    <div class="alert alert-danger mb-4" role="alert">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle"></i> Cảnh báo!
+                        </h4>
+                        <p class="mb-0">Bạn có chắc chắn muốn xóa lớp này? Thao tác này không thể hoàn tác.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="section-title">Thông tin lớp</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Tên lớp</div>
+                            <div class="col-md-8">@Model.ClassName</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="section-title">Dữ liệu liên quan</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-muted">Sinh viên</div>
+                            <div class="col-md-8">
+                                <span class="badge bg-info">@(Model.Students?.Count ?? 0) sinh viên</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" method="post" class="d-flex justify-content-end gap-2">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ClassID" />
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại
+                        </a>
+                        <button type="submit" class="btn-delete">
+                            <i class="fas fa-trash"></i> Xóa lớp
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .text-muted {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+        }
+
+        .badge {
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .bg-info {
+            background-color: rgba(13, 202, 240, 0.1) !important;
+            color: #0dcaf0;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-delete:hover {
+            background-color: #e63757;
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .alert-danger {
+            background-color: #fff5f7;
+            border: 1px solid #ffd4dc;
+            color: var(--danger-color);
+            border-radius: 6px;
+        }
+
+        .alert-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+} 

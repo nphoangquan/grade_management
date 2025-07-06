@@ -1,0 +1,510 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <!-- Hero Section -->
+    <section class="hero-section position-relative overflow-hidden">
+        <div class="container h-100">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6 py-5 fade-in-left">
+                    <h1 class="hero-title display-4 fw-bold mb-4">Hệ thống quản lý điểm sinh viên</h1>
+                    <p class="lead mb-4">Nâng cao giáo dục thông qua quản lý điểm và theo dõi tiến trình học tập.</p>
+                    <div class="d-flex gap-3">
+                        <a href="/Identity/Account/Login" class="btn btn-primary btn-lg">
+                            Bắt đầu
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#features" class="btn btn-outline-primary btn-lg">
+                            Tìm hiểu thêm
+                            <i class="fas fa-info-circle ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 py-5 fade-in-right">
+                    <img src="~/image/education-banner.png" alt="Education Banner" class="img-fluid floating-animation bordered-image">
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Features Section -->
+<section id="features" class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 fade-in-up">TÍNH NĂNG CHÍNH</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card card h-100 border-0 shadow-sm slide-up">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-chart-line fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h5 mb-3">QUẢN LÝ ĐIỂM</h3>
+                        <p class="text-muted mb-0">Quản lý và theo dõi điểm của sinh viên một cách hiệu quả với hệ thống điểm đa dạng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100 border-0 shadow-sm slide-up" style="animation-delay: 0.2s">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-users fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h5 mb-3">TIẾN TRÌNH HỌC TẬP</h3>
+                        <p class="text-muted mb-0">Theo dõi tiến trình học tập của sinh viên với các chỉ số chi tiết và theo dõi hiệu quả.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card card h-100 border-0 shadow-sm slide-up" style="animation-delay: 0.4s">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-graduation-cap fa-3x text-primary"></i>
+                        </div>
+                        <h3 class="h5 mb-3">CHẤT LƯỢNG GIÁO DỤC</h3>
+                        <p class="text-muted mb-0">Phát triển chất lượng giáo dục thông qua quản lý điểm và theo dõi tiến trình học tập.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section py-5 bg-light">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="stat-card fade-in-up" style="animation-delay: 0.2s">
+                    <i class="fas fa-user-graduate fa-3x text-primary mb-3"></i>
+                    <h2 class="counter">1000+</h2>
+                    <p class="text-muted">Sinh viên</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card fade-in-up" style="animation-delay: 0.4s">
+                    <i class="fas fa-book fa-3x text-primary mb-3"></i>
+                    <h2 class="counter">50+</h2>
+                    <p class="text-muted">Môn học</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card fade-in-up" style="animation-delay: 0.6s">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-primary mb-3"></i>
+                    <h2 class="counter">100+</h2>
+                    <p class="text-muted">Giảng viên</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+@if (!User.Identity.IsAuthenticated)
+{
+    <section class="cta-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center fade-in-up">
+                    <h2 class="mb-4">Bạn đã sẵn sàng bắt đầu?</h2>
+                    <p class="lead mb-4">Tham gia hệ thống và trải nghiệm tương lai của quản lý điểm.</p>
+                    <a href="/Identity/Account/Register" class="btn btn-primary btn-lg pulse-button">
+                        Đăng ký ngay
+                        <i class="fas fa-user-plus ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+<style>
+    /* Hero Section Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+        min-height: 100vh;
+        padding: 100px 0;
+        overflow: hidden;
+        border-radius: 10px 10px 10px 10px;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        line-height: 1.2;
+        color: #0d6efd;
+        margin-bottom: 1.5rem;
+    }
+
+
+
+    /* Button Styles */
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary {
+        color: #0d6efd;
+        border-color: #0d6efd;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Animation Classes */
+    .fade-in-left {
+        -webkit-animation: fadeInLeft 1s ease-out;
+        animation: fadeInLeft 1s ease-out;
+    }
+
+    .fade-in-right {
+        -webkit-animation: fadeInRight 1s ease-out;
+        animation: fadeInRight 1s ease-out;
+    }
+
+    .floating-animation {
+        -webkit-animation: floating 3s ease-in-out infinite;
+        animation: floating 3s ease-in-out infinite;
+    }
+
+    .bordered-image {
+        border: 3px solid #0d6efd;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(13, 110, 253, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .bordered-image:hover {
+        border-color: #0b5ed7;
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
+        transform: translateY(-5px);
+    }
+
+    /* Animation Keyframes */
+    @@media (prefers-reduced-motion: no-preference) {
+        @@keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @@keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    }
+
+    /* Responsive Styles */
+    @@media (max-width: 991.98px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-section {
+            padding: 60px 0;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .btn-primary, .btn-outline-primary {
+            padding: 10px 20px;
+        }
+    }
+
+    /* Animations */
+    @@-webkit-keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            -webkit-transform: translateX(-50px);
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@-webkit-keyframes fadeInRight {
+        from {
+            opacity: 0;
+            -webkit-transform: translateX(50px);
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            -webkit-transform: translateX(0);
+            transform: translateX(0);
+        }
+    }
+
+    @@keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @@-webkit-keyframes fadeInUp {
+        from {
+            opacity: 0;
+            -webkit-transform: translateY(20px);
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@-webkit-keyframes slideUp {
+        from {
+            opacity: 0;
+            -webkit-transform: translateY(40px);
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@-webkit-keyframes pulse {
+        0% {
+            -webkit-box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.4);
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.4);
+        }
+        70% {
+            -webkit-box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), 0);
+            box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), 0);
+        }
+        100% {
+            -webkit-box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0);
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0);
+        }
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(var(--bs-primary-rgb), 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(var(--bs-primary-rgb), 0);
+        }
+    }
+
+    /* Animation Classes */
+    .fade-in-left {
+        -webkit-animation: fadeInLeft 1s ease-out;
+        animation: fadeInLeft 1s ease-out;
+    }
+
+    .fade-in-right {
+        -webkit-animation: fadeInRight 1s ease-out;
+        animation: fadeInRight 1s ease-out;
+    }
+
+    .fade-in-up {
+        -webkit-animation: fadeInUp 1s ease-out;
+        animation: fadeInUp 1s ease-out;
+        opacity: 0;
+        -webkit-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+    }
+
+    .slide-up {
+        -webkit-animation: slideUp 0.8s ease-out;
+        animation: slideUp 0.8s ease-out;
+        opacity: 0;
+        -webkit-animation-fill-mode: forwards;
+        animation-fill-mode: forwards;
+    }
+
+    .pulse-button {
+        -webkit-animation: pulse 2s infinite;
+        animation: pulse 2s infinite;
+    }
+
+    /* Styles */
+    .hero-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .min-vh-75 {
+        min-height: 75vh;
+    }
+
+    .shape-divider {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        overflow: hidden;
+        line-height: 0;
+    }
+
+    .shape-divider svg {
+        position: relative;
+        display: block;
+        width: calc(100% + 1.3px);
+        height: 150px;
+    }
+
+    .shape-divider .shape-fill {
+        fill: #ffffff;
+    }
+
+    .feature-card {
+        -webkit-transition: transform 0.3s ease;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        -webkit-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+    .feature-icon {
+        height: 80px;
+        width: 80px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(var(--bs-primary-rgb), 0.1);
+    }
+
+    .stat-card {
+        padding: 2rem;
+        border-radius: 1rem;
+        background: white;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        -webkit-transition: transform 0.3s ease;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        -webkit-transform: translateY(-5px);
+        transform: translateY(-5px);
+    }
+
+    .counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--bs-primary);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #0056b3 100%);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        margin: 20px;
+        box-shadow: 0 15px 35px rgba(13, 110, 253, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+        pointer-events: none;
+    }
+
+
+</style>

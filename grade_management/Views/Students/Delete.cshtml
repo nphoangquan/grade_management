@@ -1,0 +1,168 @@
+@model grade_management.Models.StudentModel
+
+@{
+    ViewData["Title"] = "Delete Student";
+}
+
+<div class="container">
+    <h1 class="page-title">Delete Student</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="alert alert-danger mb-4">
+                        <h4 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle"></i> Warning!
+                        </h4>
+                        <p class="mb-0">Are you sure you want to delete this student? This action cannot be undone.</p>
+                    </div>
+
+                    <div class="student-details">
+                        <div class="detail-group">
+                            <label class="detail-label">Student ID</label>
+                            <div class="detail-value">@Model.StudentID</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Name</label>
+                            <div class="detail-value">@Model.StudentName</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Gender</label>
+                            <div class="detail-value">@Model.StudentSex</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Email</label>
+                            <div class="detail-value">@Model.StudentEmail</div>
+                        </div>
+
+                        <div class="detail-group">
+                            <label class="detail-label">Class</label>
+                            <div class="detail-value">@(Model.Class?.ClassName ?? "Not Assigned")</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="StudentID" />
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Delete Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .alert-danger {
+            background-color: #fff5f7;
+            border: 1px solid #fecdd3;
+            color: #be123c;
+            border-radius: 6px;
+        }
+
+        .alert-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .student-details {
+            display: grid;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .detail-group {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            color: var(--text-primary);
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .btn-secondary {
+            background-color: #e9ecef;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #dee2e6;
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background: linear-gradient(145deg, #ef476f, #d63384);
+            border: none;
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            box-shadow: 0 2px 4px rgba(239, 71, 111, 0.15);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 71, 111, 0.2);
+            color: #ffffff;
+        }
+
+        .gap-2 {
+            gap: 0.5rem !important;
+        }
+
+        .mt-4 {
+            margin-top: 1.5rem !important;
+        }
+
+        .mb-4 {
+            margin-bottom: 1.5rem !important;
+        }
+
+        .mb-0 {
+            margin-bottom: 0 !important;
+        }
+    </style>
+} 

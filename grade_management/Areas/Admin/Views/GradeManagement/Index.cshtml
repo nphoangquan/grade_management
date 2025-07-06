@@ -1,0 +1,101 @@
+@model IEnumerable<grade_management.Models.ClassModel>
+
+@{
+    ViewData["Title"] = "Quản lý điểm";
+}
+
+<div class="container">
+    <h1 class="page-title">Quản lý điểm</h1>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="search-filter">
+            <form asp-action="Index" method="get" class="d-flex">
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control me-2" placeholder="Tìm kiếm lớp...">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (!Model.Any() && !string.IsNullOrEmpty(ViewData["CurrentFilter"]?.ToString()))
+    {
+        <div class="alert alert-info" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            Không tìm thấy lớp nào khớp với "@ViewData["CurrentFilter"]"
+        </div>
+    }
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.ClassName</h5>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-users me-2"></i>
+                            @item.Students?.Count sinh viên
+                        </p>
+                        <a asp-action="ClassStudents" asp-route-classId="@item.ClassID" class="btn btn-primary w-100">
+                            <i class="fas fa-eye me-2"></i>Xem sinh viên
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-filter {
+            max-width: 300px;
+        }
+
+        .btn-filter {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .btn-filter:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .alert-info {
+            background-color: rgba(13, 202, 240, 0.1);
+            border: 1px solid rgba(13, 202, 240, 0.2);
+            color: #0dcaf0;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+        }
+
+        .me-2 {
+            margin-right: 0.5rem;
+        }
+    </style>
+} 

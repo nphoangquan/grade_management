@@ -1,0 +1,396 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using grade_management.Data
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hệ thống quản lý điểm sinh viên</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            @if (SignInManager.IsSignedIn(User) && (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_User) || User.IsInRole(SD.Role_Moderator)))
+            {
+                <button class="modern-sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarNav" aria-controls="sidebarNav">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            }
+            <a class="navbar-brand spaced-brand" href="/">
+                QUẢN LÝ ĐIỂM SINH VIÊN
+            </a>
+            <div class="d-flex ms-auto">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Offcanvas -->
+    @if (SignInManager.IsSignedIn(User) && (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_User) || User.IsInRole(SD.Role_Moderator)))
+    {
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarNav" aria-labelledby="sidebarNavLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="sidebarNavLabel">
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <span>Menu Quản Trị Viên</span>
+                    }
+                    else if (User.IsInRole(SD.Role_User))
+                    {
+                        <span>Menu Sinh Viên</span>
+                    }
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <span>Menu Giảng Viên</span>
+                    }
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <ul class="nav flex-column">
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="AdminDashboard" asp-action="Index">
+                                <i class="bi bi-house"></i> Bảng điều khiển
+                            </a>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="User" asp-controller="UserDashboard" asp-action="Index">
+                                <i class="bi bi-house"></i> Bảng điều khiển
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="User" asp-controller="StudentProfile" asp-action="Index">
+                                <i class="bi bi-person-circle"></i> Hồ sơ cá nhân
+                            </a>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Moderator" asp-controller="ModeratorDashboard" asp-action="Index">
+                                <i class="bi bi-house"></i> Bảng điều khiển
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Moderator" asp-controller="TeacherProfile" asp-action="Index">
+                                <i class="bi bi-person-circle"></i> Hồ sơ cá nhân
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#studentMenu" role="button" aria-expanded="false" aria-controls="studentMenu">
+                                <i class="bi bi-mortarboard"></i> Quản lý sinh viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="studentMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="StudentManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách sinh viên</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="StudentManagement" asp-action="Create"><i class="bi bi-person-plus"></i> Thêm sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    @* else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#studentViewMenu" role="button" aria-expanded="false" aria-controls="studentViewMenu">
+                                <i class="bi bi-mortarboard"></i> Xem sinh viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="studentViewMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="User" asp-controller="StudentManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    } *@
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#studentModeratorMenu" role="button" aria-expanded="false" aria-controls="studentModeratorMenu">
+                                <i class="bi bi-mortarboard"></i> Xem sinh viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="studentModeratorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="StudentManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#teacherMenu" role="button" aria-expanded="false" aria-controls="teacherMenu">
+                                <i class="bi bi-person-workspace"></i> Quản lý giảng viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="teacherMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="TeacherManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách giảng viên</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="TeacherManagement" asp-action="Create"><i class="bi bi-person-plus"></i> Thêm giảng viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#teacherViewMenu" role="button" aria-expanded="false" aria-controls="teacherViewMenu">
+                                <i class="bi bi-person-workspace"></i> Xem giảng viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="teacherViewMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="User" asp-controller="TeacherManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách giảng viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#teacherModeratorMenu" role="button" aria-expanded="false" aria-controls="teacherModeratorMenu">
+                                <i class="bi bi-person-workspace"></i> Xem giảng viên <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="teacherModeratorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="TeacherManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách giảng viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#subjectMenu" role="button" aria-expanded="false" aria-controls="subjectMenu">
+                                <i class="bi bi-book"></i> Quản lý môn học <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="subjectMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="SubjectManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách môn học</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="SubjectManagement" asp-action="Create"><i class="bi bi-plus-circle"></i> Thêm môn học</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#subjectViewMenu" role="button" aria-expanded="false" aria-controls="subjectViewMenu">
+                                <i class="bi bi-book"></i> Xem môn học <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="subjectViewMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="User" asp-controller="SubjectManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách môn học</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#subjectModeratorMenu" role="button" aria-expanded="false" aria-controls="subjectModeratorMenu">
+                                <i class="bi bi-book"></i> Xem môn học <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="subjectModeratorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="SubjectManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách môn học</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#classMenu" role="button" aria-expanded="false" aria-controls="classMenu">
+                                <i class="bi bi-people"></i> Quản lý lớp <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="classMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="ClassManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách lớp</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="ClassManagement" asp-action="Create"><i class="bi bi-plus-circle"></i> Thêm lớp</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#departmentMenu" role="button" aria-expanded="false" aria-controls="departmentMenu">
+                                <i class="bi bi-building"></i> Quản lý khoa <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="departmentMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="DepartmentManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách khoa</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="DepartmentManagement" asp-action="Create"><i class="bi bi-plus-circle"></i> Thêm khoa</a></li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#userMenu" role="button" aria-expanded="false" aria-controls="userMenu">
+                                <i class="bi bi-people-fill"></i> Quản lý tài khoản <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="userMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="UserManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách tài khoản</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#classViewMenu" role="button" aria-expanded="false" aria-controls="classViewMenu">
+                                <i class="bi bi-people"></i> Xem lớp <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="classViewMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="User" asp-controller="ClassManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách lớp</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#classModeratorMenu" role="button" aria-expanded="false" aria-controls="classModeratorMenu">
+                                <i class="bi bi-people"></i> Xem lớp <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="classModeratorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="ClassManagement" asp-action="Index"><i class="bi bi-list-ul"></i> Danh sách lớp</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#gradeMenu" role="button" aria-expanded="false" aria-controls="gradeMenu">
+                                <i class="bi bi-award"></i> Quản lý điểm <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="gradeMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="GradeManagement" asp-action="Index"><i class="bi bi-list-check"></i> Xem điểm theo lớp</a></li>
+                                    <li><a class="nav-link" asp-area="Admin" asp-controller="GradeManagement" asp-action="AllStudents"><i class="bi bi-mortarboard"></i> Quản lý điểm của tất cả sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                    @* else if (User.IsInRole(SD.Role_User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#gradeViewMenu" role="button" aria-expanded="false" aria-controls="gradeViewMenu">
+                                <i class="bi bi-award"></i> Xem điểm <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="gradeViewMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="User" asp-controller="GradeManagement" asp-action="Index"><i class="bi bi-list-check"></i> Xem điểm theo lớp</a></li>
+                                    <li><a class="nav-link" asp-area="User" asp-controller="GradeManagement" asp-action="AllStudents"><i class="bi bi-mortarboard"></i> Xem điểm của tất cả sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    } *@
+                    else if (User.IsInRole(SD.Role_Moderator))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#gradeModeratorMenu" role="button" aria-expanded="false" aria-controls="gradeModeratorMenu">
+                                <i class="bi bi-award"></i> Quản lý điểm <i class="bi bi-chevron-down float-end"></i>
+                            </a>
+                            <div class="collapse" id="gradeModeratorMenu">
+                                <ul class="nav flex-column ms-3">
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="GradeManagement" asp-action="Index"><i class="bi bi-list-check"></i> Xem điểm theo lớp</a></li>
+                                    <li><a class="nav-link" asp-area="Moderator" asp-controller="GradeManagement" asp-action="AllStudents"><i class="bi bi-mortarboard"></i> Xem điểm của tất cả sinh viên</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6 class="mb-3">Hệ thống quản lý điểm sinh viên</h6>
+                    <p class="small">Giải pháp toàn diện cho việc quản lý học vụ và điểm số trong các trường đại học.</p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Liên kết</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/">Trang chủ</a></li>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @if (User.IsInRole(SD.Role_Admin))
+                            {
+                                <li><a asp-area="Admin" asp-controller="Home" asp-action="Index">Quản trị</a></li>
+                            }
+                            else if (User.IsInRole(SD.Role_User))
+                            {
+                                <li><a asp-area="User" asp-controller="UserDashboard" asp-action="Index">User Portal</a></li>
+                            }
+                            else if (User.IsInRole(SD.Role_Moderator))
+                            {
+                                <li><a asp-area="Moderator" asp-controller="ModeratorDashboard" asp-action="Index">Moderator Portal</a></li>
+                            }
+                        }
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="mb-3">Hỗ trợ</h6>
+                    <ul class="list-unstyled small">
+                        <li><a href="/Help">Hướng dẫn sử dụng</a></li>
+                        <li><a href="/Contact">Liên hệ</a></li>
+                        <li><a href="/FAQ">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 small">&copy; 2025 QUẢN LÝ ĐIỂM SINH VIÊN. Tất cả quyền được bảo lưu.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <span class="small">Phiên bản 1.0.0</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
