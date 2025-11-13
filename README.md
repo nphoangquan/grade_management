@@ -24,9 +24,9 @@ A comprehensive student grade management system built with ASP.NET Core MVC for 
 
 ## User Roles
 
-- **🔑 Admin**: Full system management, user accounts, all operations
-- **👨‍🏫 Moderator (Teacher)**: Grade management, student oversight, reporting
-- **👨‍🎓 User (Student)**: View grades, personal profile, academic records
+- ** Admin**: Full system management, user accounts, all operations
+- ** Moderator (Teacher)**: Grade management, student oversight, reporting
+- ** User (Student)**: View grades, personal profile, academic records
 
 ## Getting Started
 
