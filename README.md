@@ -1,6 +1,6 @@
 # Grade Management System
 
-A comprehensive student grade management system built with ASP.NET Core MVC for educational institutions.
+A student grade management system built with ASP.NET Core MVC for educational institutions.
 
 ## Features
 
